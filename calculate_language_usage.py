@@ -156,7 +156,7 @@ def save_readme(language_usage, language_data):
 
     with open("README.md", "w") as f:
         f.write("# Language Usage\n\n")
-        f.write(f">[!NOTE]\n> **Last updated:** {update_time}\n\n")
+        f.write(f">[!NOTE]\n> **Last updated: {update_time}**\n\n")
         
         f.write(f">![Python](https://img.shields.io/badge/Language-Python-blue) ![C](https://img.shields.io/badge/Language-C-lightgrey) ![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)\n")
         f.write(f">![HTML](https://img.shields.io/badge/Language-HTML-orange) ![CSS](https://img.shields.io/badge/Language-CSS-blueviolet) ![Solidity](https://img.shields.io/badge/Language-Solidity-gray)\n")
