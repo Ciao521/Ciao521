@@ -192,8 +192,9 @@ def save_language_details(language_data, filename="language_details.json"):
 def main():
     # リポジトリの言語使用率を取得・計算
     repositories = fetch_repositories()
-    language_usage = calculate_language_usage(repositories)
-    language_data = analyze_repository_files(repositories)
+    language_data = analyze_repository_files(repositories)  # language_data を取得
+    language_usage = calculate_language_usage(language_data)  
+    
     
     # 言語使用率データをjsonで保存
     with open("language_usage.json", "w") as f:
