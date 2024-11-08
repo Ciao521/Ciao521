@@ -3,8 +3,7 @@
 Last updated: 2024-11-08 16:56:17 UTC
 
 > [!CAUTION]
-> Negative potential consequences of an action.
-language_usage = total_steps_one_languages  / total_steps_all_languages
+> language_usage = total_steps_one_languages  / total_steps_all_languages
 
 - Python: 50.3%
 - C: 1.09%
