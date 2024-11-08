@@ -33,9 +33,12 @@ jobs:
           cat language_usage.json >> README.md
 
       - name: Commit changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
           git commit -m "Update language usage in README"
-          git push
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521.git
+          git push origin main
