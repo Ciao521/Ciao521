@@ -1,43 +1,85 @@
 {
     "Python": {
-        "file_count": 26,
+        "file_count": 5338,
         "max_steps": 478706,
         "top_imports": [
             [
-                "import json",
-                2
+                "import torch",
+                1563
             ],
             [
                 "import os",
-                2
+                714
             ],
             [
-                "import re",
-                2
+                "from typing import",
+                542
             ],
             [
-                "import matplotlib",
-                2
+                "import numpy",
+                381
             ],
             [
-                "import requests",
-                1
+                "import sys",
+                346
             ]
         ]
     },
     "C": {
-        "file_count": 1,
-        "max_steps": 16,
-        "top_imports": []
+        "file_count": 488,
+        "max_steps": 86680,
+        "top_imports": [
+            [
+                "import React",
+                3
+            ],
+            [
+                "import Web3",
+                2
+            ],
+            [
+                "import App",
+                2
+            ],
+            [
+                "import ReactDOM",
+                1
+            ],
+            [
+                "import reportWebVitals",
+                1
+            ]
+        ]
     },
     "JavaScript": {
-        "file_count": 3,
-        "max_steps": 244,
-        "top_imports": []
+        "file_count": 15,
+        "max_steps": 30039,
+        "top_imports": [
+            [
+                "import React",
+                2
+            ],
+            [
+                "import App",
+                2
+            ],
+            [
+                "import Web3",
+                1
+            ],
+            [
+                "import ReactDOM",
+                1
+            ],
+            [
+                "import reportWebVitals",
+                1
+            ]
+        ]
     },
     "null": {
-        "file_count": 4,
-        "max_steps": 14,
+        "file_count": 11,
+        "max_steps": 58646,
         "top_imports": []
     },
     "Jupyter Notebook": {
