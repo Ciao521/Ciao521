@@ -49,7 +49,23 @@ def calculate_language_usage(repositories):
             language_count[language] += bytes_count
             total_bytes += bytes_count
     return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
-
+# リポジトリのファイルを解析
+def fetch_repository_files_recursive(contents_url, headers):
+    """ 指定されたURLのファイル・ディレクトリを再帰的に取得 """
+    files = []
+    response = requests.get(contents_url, headers=headers)
+    if response.status_code != 200:
+        print(f"Failed to fetch contents: {response.status_code}")
+        return files
+    
+    items = response.json()
+    for item in items:
+        if item["type"] == "file":
+            files.append(item)
+        elif item["type"] == "dir":
+            # ディレクトリの場合、再帰的にその中身を取得
+            files.extend(fetch_repository_files_recursive(item["url"], headers))
+    return files
 # リポジトリのファイルを解析
 def analyze_repository_files(repositories):
     language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
@@ -135,7 +151,7 @@ def save_language_pie_chart(language_usage, filename="language_usage.png"):
     plt.close()
 
 # READMEを更新
-def save_readme(language_usage):
+def save_readme(language_usage, language_data):
     # 現在の日時を取得
     update_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
 
@@ -148,6 +164,17 @@ def save_readme(language_usage):
             f.write(f"- {language}: {percentage}%\n")
         
         f.write("\n![Language Usage Chart](language_usage.png)\n")
+                # トップ3の言語の詳細を追加
+        f.write("\n## Language Details (Top 3)\n")
+        top_3_languages = sorted(language_usage.keys(), key=lambda x: language_usage[x], reverse=True)[:3]
+        for language in top_3_languages:
+            data = language_data.get(language, {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
+            f.write(f"\n### {language}\n")
+            f.write(f"- File count: {data['file_count']}\n")
+            f.write(f"- Max steps in a file: {data['max_steps']}\n")
+            f.write("- Top imports:\n")
+            for imp, count in data['import_counts'].most_common(5):
+                f.write(f"  - {imp}: {count} times\n")
 
 # 言語ごとの詳細をJSONファイルに保存
 def save_language_details(language_data, filename="language_details.json"):
@@ -177,7 +204,7 @@ def main():
     
     # 言語使用率の円環グラフとREADMEの保存
     save_language_pie_chart(language_usage)
-    save_readme(language_usage)
+    save_readme(language_usage, language_data)
     
     # 言語ごとの詳細情報を保存
     save_language_details(language_data)
