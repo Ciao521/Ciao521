@@ -141,7 +141,7 @@ def save_language_pie_chart(language_usage, filename="language_usage.png"):
     ax.legend(wedges, labels, title="Languages", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
     # タイトルと見た目の調整
-    ax.set_title("Language Usage Chart", pad=20, fontsize=14, fontweight="bold", color="#4B0082")
+    ax.set_title("Language Usage Chart", pad=20, fontsize=14, fontweight="bold", color="#3f5b85")
     fig.patch.set_facecolor("#333333")  # 背景色をダークにして8ビット風に
 
     # 画像の保存
