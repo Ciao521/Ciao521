@@ -44,11 +44,18 @@ def save_language_pie_chart(language_usage):
     labels = list(language_usage.keys())
     sizes = list(language_usage.values())
 
-    plt.figure(figsize=(8, 8))
-    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
-    plt.axis('equal')
-    plt.title("Language Usage")
-    plt.savefig("language_usage.png")  # グラフ画像を保存
+    plt.figure(figsize=(6, 6))  # グラフ画像を小さめに設定
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140, 
+            textprops={'fontsize': 10})  # フォントサイズを小さく調整
+    plt.axis('equal')  # 円形に調整
+    plt.title("Language Usage", fontsize=14)
+    
+    # レジェンドを追加してラベルが重ならないようにする
+    plt.legend(labels, loc="best", fontsize=10, bbox_to_anchor=(1, 0.5))
+    plt.tight_layout()  # レイアウトを自動調整
+
+    plt.savefig("language_usage.png", bbox_inches='tight')  # 画像を保存
+    plt.close()
 
 def save_readme(language_usage):
     # 現在の日時を取得
