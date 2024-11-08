@@ -43,4 +43,6 @@ jobs:
           git commit -m "Update language usage in README"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521.git
           git pull --rebase origin main  # リモートの変更を取得して再適用
+          git rebase origin/main  # リモートの変更をローカルに取り込み、必要に応じて自動でマージ
           git push origin main
+
