@@ -156,8 +156,8 @@ def save_readme(language_usage, language_data):
 
     with open("README.md", "w") as f:
         f.write("# Language Usage\n\n")
-        f.write(f"[!NOTE]\n**Last updated:** {update_time}\n\n")
-        f.write(f"[!CAUTION]\n**language_usage = total_steps_languages:** {update_time}\n\n")
+        f.write(f">[!NOTE]\n> **Last updated:** {update_time}\n\n")
+        f.write(f">[!CAUTION]\n> **language_usage = total_steps_languages:** {update_time}\n\n")
         # 言語とその割合を記載
         for language, percentage in language_usage.items():
             f.write(f"- {language}: {percentage}%\n")
@@ -171,9 +171,6 @@ def save_readme(language_usage, language_data):
             f.write(f"\n### {language}\n")
             f.write(f"- File count: {data['file_count']}\n")
             f.write(f"- Max steps in a file: {data.get('max_steps', 'N/A')}\n")
-            f.write("- Top imports:\n")
-            for imp, count in data['import_counts'].most_common(5):
-                f.write(f"  - {imp}: {count} times\n")
 
 # 言語ごとの詳細をJSONファイルに保存
 def save_language_details(language_data, filename="language_details.json"):
