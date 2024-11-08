@@ -41,7 +41,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           if [ -f language_usage.json ]; then git add language_usage.json; fi  # 存在確認後に追加
           git add README.md language_usage.png
-          git commit -m "Update language usage in README" || echo "No changes to commit"
+          git commit -m "Update language usage in README" || echo "No changes to commit or commit failed"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521.git
           
           # リモートの変更を取得して最新の実行結果を再適用
@@ -49,5 +49,5 @@ jobs:
           git reset --hard origin/main
           if [ -f language_usage.json ]; then git add language_usage.json; fi  # 再度確認
           git add README.md language_usage.png
-          git commit -m "Update language usage in README (latest result)"
-          git push origin main --force
+          git commit -m "Update language usage in README (latest result)" || echo "No changes to commit or commit failed"
+          git push origin main --force || echo "Push failed or no changes to push"
