@@ -40,14 +40,15 @@ def calculate_language_usage(repositories):
             total_bytes += bytes_count
     return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
 
-# 8ビット風のカラーパレット（例）
-colors = [
-    "#FFB6C1", "#FF69B4", "#DB7093", "#C71585", "#FF6347",
-    "#FFA500", "#FFD700", "#FFFF00", "#ADFF2F", "#7FFF00",
-    "#32CD32", "#00FF7F", "#3CB371", "#20B2AA", "#00CED1",
+import matplotlib.pyplot as plt
+
+# モネ風の柔らかいパステル調のカラーパレット
+monet_colors = [
+    "#a8c5dd", "#f5d5b5", "#d4a5a5", "#a3c1ad", "#b2d3c2",
+    "#f3e1dd", "#c4b6a4", "#e7d3c8", "#ccd4bf", "#e4d8b4"
 ]
 
-def save_language_pie_chart(language_usage):
+def save_language_pie_chart(language_usage, filename="language_usage.png"):
     labels = []
     sizes = []
     filtered_labels = []
@@ -62,30 +63,32 @@ def save_language_pie_chart(language_usage):
             filtered_labels.append(f"{language} ({size}%)")
             filtered_sizes.append(size)
         else:
-            # 表示されない小さな項目は「その他」にまとめるオプションもあります
             filtered_labels.append("")
             filtered_sizes.append(size)
 
     fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(aspect="equal"))
 
+    # 円環グラフの作成（擬似的に立体感を出す）
     wedges, texts = ax.pie(
         filtered_sizes,
         startangle=140,
-        colors=colors[:len(filtered_labels)],  # 8ビット風カラーパレットを適用
-        wedgeprops=dict(width=0.3, edgecolor='w'),  # 3D風の立体感
+        colors=monet_colors[:len(filtered_labels)],  # モネ風カラーパレット
+        wedgeprops=dict(width=0.3, edgecolor='w')  # 3D風の立体感
     )
 
     # レジェンドの設定
     ax.legend(wedges, labels, title="Languages", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
     # タイトルと見た目の調整
-    ax.set_title("3D-Style Language Usage Chart", pad=20, fontsize=14, fontweight="bold", color="#4B0082")
+    ax.set_title("Language Usage Chart", pad=20, fontsize=14, fontweight="bold", color="#4B0082")
     fig.patch.set_facecolor("#333333")  # 背景色をダークにして8ビット風に
-    plt.gcf().canvas.draw()  # キャンバスを更新
 
     # 画像の保存
-    plt.savefig("language_usage.png", format="png", bbox_inches="tight", transparent=True)
+    plt.savefig(filename, format="png", bbox_inches="tight", transparent=True)
     plt.close()
+
+# この関数を呼び出すと、指定したファイル名でグラフが保存されます。
+
 
 def save_readme(language_usage):
     # 現在の日時を取得
