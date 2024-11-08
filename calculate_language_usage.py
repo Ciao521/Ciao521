@@ -39,16 +39,7 @@ def fetch_languages(repo):
     response = requests.get(url, headers=headers)
     return response.json()
 
-# 言語使用率を計算
-def calculate_language_usage(repositories):
-    language_count = defaultdict(int)
-    total_bytes = 0
-    for repo in repositories:
-        languages = fetch_languages(repo)
-        for language, bytes_count in languages.items():
-            language_count[language] += bytes_count
-            total_bytes += bytes_count
-    return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
+
 # リポジトリのファイルを解析
 def fetch_repository_files_recursive(contents_url, headers):
     """ 指定されたURLのファイル・ディレクトリを再帰的に取得 """
@@ -106,7 +97,16 @@ def analyze_repository_files(repositories):
                 language_data[language]["import_counts"].update(imports)
     
     return language_data
-
+    
+# 言語使用率を「ファイル数 * ステップ数」で計算
+def calculate_language_usage(language_data):
+    total_steps_all_languages = sum(data["total_steps"] for data in language_data.values())
+    language_usage = {
+        language: round((data["total_steps"] / total_steps_all_languages) * 100, 2)
+        for language, data in language_data.items()
+    }
+    return language_usage
+    
 # 言語使用円環グラフを生成して保存
 def save_language_pie_chart(language_usage, filename="language_usage.png"):
     labels = []
