@@ -162,7 +162,7 @@ def save_readme(language_usage, language_data):
         f.write(f">![HTML](https://img.shields.io/badge/Language-HTML-orange) ![CSS](https://img.shields.io/badge/Language-CSS-blueviolet) ![Solidity](https://img.shields.io/badge/Language-Solidity-gray)\n")
         f.write(f">![R](https://img.shields.io/badge/Language-R-lightblue) ![Node.js](https://img.shields.io/badge/Language-Node.js-green) ![Scala](https://img.shields.io/badge/Language-Scala-red) \n\n")
 
-        f.write(f">[!CAUTION]\n> **language_usage = total_steps_languages:** {update_time}\n\n")
+        f.write(f">[!CAUTION]\n> **language_usage = total_steps_languages:** \n\n")
         # 言語とその割合を記載
         for language, percentage in language_usage.items():
             f.write(f"- {language}: {percentage}%\n")
