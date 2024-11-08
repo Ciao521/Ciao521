@@ -170,7 +170,7 @@ def save_readme(language_usage, language_data):
             data = language_data.get(language, {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
             f.write(f"\n### {language}\n")
             f.write(f"- File count: {data['file_count']}\n")
-            f.write(f"- Max steps in a file: {data.get('max_steps', 'N/A')}\n") )
+            f.write(f"- Max steps in a file: {data.get('max_steps', 'N/A')}\n")
             f.write("- Top imports:\n")
             for imp, count in data['import_counts'].most_common(5):
                 f.write(f"  - {imp}: {count} times\n")
