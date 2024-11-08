@@ -42,7 +42,35 @@ def calculate_language_usage(repositories):
             language_count[language] += bytes_count
             total_bytes += bytes_count
     return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
+# リポジトリのファイルを解析
+def analyze_repository_files(repositories):
+    language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
+    for repo in repositories:
+        repo_name = repo['name']
+        contents_url = f"https://api.github.com/repos/{repo_name}/contents"
+        headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
+        response = requests.get(contents_url, headers=headers)
+        files = response.json()
+        
+        for file in files:
+            if file["type"] == "file":
+                file_path = file["path"]
+                file_response = requests.get(file["download_url"])
+                if file_response.status_code == 200:
+                    file_content = file_response.text
+                    language = file["language"]
+                    lines = file_content.splitlines()
+                    step_count = len(lines)
+                    
+                    # 更新: ファイル数、最高ステップ数
+                    language_data[language]["file_count"] += 1
+                    language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)
 
+                    # import文をカウント
+                    imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
+                    language_data[language]["import_counts"].update(imports)
+                    
+    return language_data
 # モネ風の柔らかいパステル調のカラーパレット
 monet_colors = [
     "#a8c5dd", "#f5d5b5", "#d4a5a5", "#a3c1ad", "#b2d3c2",
@@ -103,11 +131,21 @@ def save_readme(language_usage):
             f.write(f"- {language}: {percentage}%\n")
         
         f.write("\n![Language Usage Chart](language_usage.png)\n")
+        # 言語ごとの詳細を追加
+        f.write("\n## Language Details\n")
+        for language, data in language_data.items():
+            f.write(f"\n### {language}\n")
+            f.write(f"- File count: {data['file_count']}\n")
+            f.write(f"- Max steps in a file: {data['max_steps']}\n")
+            f.write("- Top imports:\n")
+            for imp, count in data['import_counts'].most_common(5):
+                f.write(f"  - {imp}: {count} times\n")
 
 def main():
     # リポジトリの言語使用率を取得・計算
     repositories = fetch_repositories()
     language_usage = calculate_language_usage(repositories)
+    language_data = analyze_repository_files(repositories)
     
     # 言語使用率データをjsonで保存
     with open("language_usage.json", "w") as f:
