@@ -149,6 +149,22 @@ def save_readme(language_usage):
         
         f.write("\n![Language Usage Chart](language_usage.png)\n")
 
+# 言語ごとの詳細をJSONファイルに保存
+def save_language_details(language_data, filename="language_details.json"):
+    # Counterをリストに変換してJSONに保存可能な形式に
+    formatted_data = {
+        language: {
+            "file_count": data["file_count"],
+            "max_steps": data["max_steps"],
+            "top_imports": data["import_counts"].most_common(5)
+        }
+        for language, data in language_data.items()
+    }
+
+    with open(filename, "w") as f:
+        json.dump(formatted_data, f, indent=4)
+
+
 def main():
     # リポジトリの言語使用率を取得・計算
     repositories = fetch_repositories()
