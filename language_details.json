@@ -1,1 +1,48 @@
-{}
+{
+    "Python": {
+        "file_count": 26,
+        "max_steps": 478706,
+        "top_imports": [
+            [
+                "import json",
+                2
+            ],
+            [
+                "import os",
+                2
+            ],
+            [
+                "import re",
+                2
+            ],
+            [
+                "import matplotlib",
+                2
+            ],
+            [
+                "import requests",
+                1
+            ]
+        ]
+    },
+    "C": {
+        "file_count": 1,
+        "max_steps": 16,
+        "top_imports": []
+    },
+    "JavaScript": {
+        "file_count": 3,
+        "max_steps": 244,
+        "top_imports": []
+    },
+    "null": {
+        "file_count": 4,
+        "max_steps": 14,
+        "top_imports": []
+    },
+    "Jupyter Notebook": {
+        "file_count": 1,
+        "max_steps": 2250,
+        "top_imports": []
+    }
+}
