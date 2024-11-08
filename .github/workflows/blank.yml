@@ -37,17 +37,18 @@ jobs:
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+      
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           
-          # リモートの変更を取得して最新の実行結果でリセット
+          # リモートの変更を取得してリベース
           git fetch origin main
-          git reset --hard origin/main
+          git pull --rebase origin main
       
           # 再生成されたファイルを追加
           if [ -f language_usage.json ]; then git add language_usage.json; fi
           git add README.md language_usage.png
       
           # 変更がなくても常に新しいコミットを作成
-          git commit -m "Force update of README and image" --allow-empty
-          git push origin main --force
+          git commit -m "Force update of README and image" --allow-empty || echo "Nothing to commit"
+          git push origin main || echo "Push completed or no changes to push"
