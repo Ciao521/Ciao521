@@ -24,7 +24,7 @@ jobs:
 
       - name: Run language usage script
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: python calculate_language_usage.py
 
       - name: Update README
