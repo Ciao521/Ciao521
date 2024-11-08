@@ -60,7 +60,7 @@ def fetch_repository_files_recursive(contents_url, headers):
 
 # 全てのファイルを解析
 def analyze_repository_files(repositories):
-    language_data = defaultdict(lambda: {"file_count": 0, "total_steps": 0, "import_counts": Counter()})
+    language_data = defaultdict(lambda: {"file_count": 0, "total_steps": 0, "import_counts": Counter(),"max_steps": 0})
     headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
     
     for repo in repositories:
