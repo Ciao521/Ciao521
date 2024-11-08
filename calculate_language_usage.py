@@ -91,6 +91,7 @@ def analyze_repository_files(repositories):
                 # 更新: ファイル数、ステップ数の合計
                 language_data[language]["file_count"] += 1
                 language_data[language]["total_steps"] += step_count  # ここで total_steps を加算
+                language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)  # 最大ステップ数を更新
 
                 # import文をカウント
                 imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
