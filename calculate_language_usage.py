@@ -40,21 +40,51 @@ def calculate_language_usage(repositories):
             total_bytes += bytes_count
     return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
 
+# 8ビット風のカラーパレット（例）
+colors = [
+    "#FFB6C1", "#FF69B4", "#DB7093", "#C71585", "#FF6347",
+    "#FFA500", "#FFD700", "#FFFF00", "#ADFF2F", "#7FFF00",
+    "#32CD32", "#00FF7F", "#3CB371", "#20B2AA", "#00CED1",
+]
+
 def save_language_pie_chart(language_usage):
-    labels = list(language_usage.keys())
-    sizes = list(language_usage.values())
+    labels = []
+    sizes = []
+    filtered_labels = []
+    filtered_sizes = []
+    threshold = 5  # %が5%以下のラベルを非表示にする
 
-    plt.figure(figsize=(6, 6))  # グラフ画像を小さめに設定
-    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140, 
-            textprops={'fontsize': 10})  # フォントサイズを小さく調整
-    plt.axis('equal')  # 円形に調整
-    plt.title("Language Usage", fontsize=14)
-    
-    # レジェンドを追加してラベルが重ならないようにする
-    plt.legend(labels, loc="best", fontsize=10, bbox_to_anchor=(1, 0.5))
-    plt.tight_layout()  # レイアウトを自動調整
+    # 言語データのフィルタリングとラベル設定
+    for language, size in language_usage.items():
+        labels.append(language)
+        sizes.append(size)
+        if size >= threshold:
+            filtered_labels.append(f"{language} ({size}%)")
+            filtered_sizes.append(size)
+        else:
+            # 表示されない小さな項目は「その他」にまとめるオプションもあります
+            filtered_labels.append("")
+            filtered_sizes.append(size)
 
-    plt.savefig("language_usage.png", bbox_inches='tight')  # 画像を保存
+    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(aspect="equal"))
+
+    wedges, texts = ax.pie(
+        filtered_sizes,
+        startangle=140,
+        colors=colors[:len(filtered_labels)],  # 8ビット風カラーパレットを適用
+        wedgeprops=dict(width=0.3, edgecolor='w'),  # 3D風の立体感
+    )
+
+    # レジェンドの設定
+    ax.legend(wedges, labels, title="Languages", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+
+    # タイトルと見た目の調整
+    ax.set_title("3D-Style Language Usage Chart", pad=20, fontsize=14, fontweight="bold", color="#4B0082")
+    fig.patch.set_facecolor("#333333")  # 背景色をダークにして8ビット風に
+    plt.gcf().canvas.draw()  # キャンバスを更新
+
+    # 画像の保存
+    plt.savefig("language_usage.png", format="png", bbox_inches="tight", transparent=True)
     plt.close()
 
 def save_readme(language_usage):
