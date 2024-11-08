@@ -1,11 +1,4 @@
 # Language Usage
-
->[!NOTE]
-> **Last updated:** 2024-11-08 18:55:30 UTC
-
->[!CAUTION]
-> **language_usage = total_steps_languages:** 2024-11-08 18:55:30 UTC
->
 >![Python](https://img.shields.io/badge/Language-Python-blue)
 >![C](https://img.shields.io/badge/Language-C-lightgrey)
 >![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)
@@ -17,6 +10,13 @@
 ![PHP](https://img.shields.io/badge/Language-PHP-purple)
 ![Scala](https://img.shields.io/badge/Language-Scala-red)
 ![Java](https://img.shields.io/badge/Language-Java-orange)
+>[!NOTE]
+> **Last updated:** 2024-11-08 18:55:30 UTC
+
+>[!CAUTION]
+> **language_usage = total_steps_languages:** 2024-11-08 18:55:30 UTC
+>
+
 - Python: 46.61%
 - C: 50.59%
 - JavaScript: 0.51%
