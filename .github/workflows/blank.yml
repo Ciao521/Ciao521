@@ -2,7 +2,9 @@ name: Update README with Language Usage
 
 on:
   schedule:
-    - cron: "00***" # 毎日深夜に実行
+    - cron: "0 0 * * *" # 毎日深夜に実行
+    - cron: "0 20 * * *" # 毎日20時に実行
+    - cron: "0 8 * * *"  # 毎朝8時に実行
   workflow_dispatch: # 手動での実行も可能
 
 jobs:
