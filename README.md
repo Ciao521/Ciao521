@@ -1,10 +1,4 @@
-# ciao521
-Ciao👋!! Welcome to my GitHub profile! Here are some of my projects and interests.
+# Language Usage
 
-## Skills
 
-- **Languages**:  Python, Java, JavaScript
-- **Frameworks**: React, Node.js, Django
-- **Tools**: Git, Docker, VS Code
-  
-<img src="https://github-readme-stats.vercel.app/api/top-langs?username=Ciao521&show_icons=true&locale=en&layout=compact&theme=chartreuse-dark" alt="ovi" /></p>
+{"Python": 47.28, "C": 18.74, "JavaScript": 3.5, "CSS": 0.26, "Makefile": 0.09, "Shell": 0.93, "C++": 0.05, "Solidity": 0.86, "Jupyter Notebook": 27.29, "Dockerfile": 0.96, "Jsonnet": 0.05}
