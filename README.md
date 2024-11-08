@@ -1,6 +1,6 @@
 # Language Usage
 
-Last updated: 2024-11-08 15:25:53 UTC
+Last updated: 2024-11-08 15:51:48 UTC
 
 - Python: 50.3%
 - C: 1.09%
@@ -18,3 +18,5 @@ Last updated: 2024-11-08 15:25:53 UTC
 - Jsonnet: 0.0%
 
 ![Language Usage Chart](language_usage.png)
+
+## Language Details
