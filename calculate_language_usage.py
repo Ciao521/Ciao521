@@ -123,7 +123,7 @@ def save_language_pie_chart(language_usage, filename="language_usage.png"):
     plt.close()
 
 # READMEを更新
-def save_readme(language_usage):
+def save_readme(language_usage, language_data):
     # 現在の日時を取得
     update_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
 
@@ -158,7 +158,7 @@ def main():
     
     # 言語使用率の円環グラフとREADMEの保存
     save_language_pie_chart(language_usage)
-    save_readme(language_usage)
+    save_readme(language_usage, language_data)
 
 if __name__ == "__main__":
     main()
