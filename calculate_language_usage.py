@@ -52,7 +52,53 @@ def fetch_repository_files(repo_name):
     if response.status_code == 200:
         return response.json()
     return []
+    
+# モネ風の柔らかいパステル調のカラーパレット
+monet_colors = [
+    "#a8c5dd", "#f5d5b5", "#d4a5a5", "#a3c1ad", "#b2d3c2",
+    "#f3e1dd", "#c4b6a4", "#e7d3c8", "#ccd4bf", "#e4d8b4"
+]
 
+# 言語使用円環グラフを生成して保存
+def save_language_pie_chart(language_usage, filename="language_usage.png"):
+    labels = []
+    sizes = []
+    filtered_labels = []
+    filtered_sizes = []
+    threshold = 5  # %が5%以下のラベルを非表示にする
+
+    # 言語データのフィルタリングとラベル設定
+    for language, size in language_usage.items():
+        labels.append(language)
+        sizes.append(size)
+        if size >= threshold:
+            filtered_labels.append(f"{language} ({size}%)")
+            filtered_sizes.append(size)
+        else:
+            filtered_labels.append("")
+            filtered_sizes.append(size)
+
+    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(aspect="equal"))
+
+    # 円環グラフの作成（擬似的に立体感を出す）
+    wedges, texts = ax.pie(
+        filtered_sizes,
+        startangle=140,
+        colors=monet_colors[:len(filtered_labels)],  # モネ風カラーパレット
+        wedgeprops=dict(width=0.3, edgecolor='w')  # 3D風の立体感
+    )
+
+    # レジェンドの設定
+    ax.legend(wedges, labels, title="Languages", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+
+    # タイトルと見た目の調整
+    ax.set_title("Language Usage Chart", pad=20, fontsize=14, fontweight="bold", color="#4B0082")
+    fig.patch.set_facecolor("#333333")  # 背景色をダークにして8ビット風に
+
+    # 画像の保存
+    plt.savefig(filename, format="png", bbox_inches="tight", transparent=True)
+    plt.close()
+    
 def analyze_repository_files(repositories):
     language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
     for repo in repositories:
