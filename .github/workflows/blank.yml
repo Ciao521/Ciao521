@@ -3,7 +3,11 @@ name: Update README with Language Usage
 on:
   schedule:
     - cron: "0 20 * * *" # 毎日20時に実行
+    - cron: "0 0 * * *"  # 毎日0時に実行
+    - cron: "0 4 * * *"  # 毎朝4時に実行
     - cron: "0 8 * * *"  # 毎朝8時に実行
+    - cron: "0 12 * * *" # 毎朝12時に実行
+    - cron: "0 16 * * *" # 毎日16時に実行
   workflow_dispatch: # 手動での実行も可能
 
 jobs:
@@ -20,25 +24,22 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          pip install requests
+          pip install matplotlib
 
       - name: Run language usage script
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: python calculate_language_usage.py
 
-      - name: Update README
-        run: |
-          echo -e "# Language Usage\n\n" > README.md
-          cat language_usage.json >> README.md
-
       - name: Commit changes
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
+          git add README.md language_usage.png
           git commit -m "Update language usage in README"
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521.git
           git push origin main
