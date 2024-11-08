@@ -15,7 +15,10 @@ def fetch_repositories():
     repos = []
     while url:
         response = requests.get(url, headers=headers, params=params)
-        repos.extend(response.json())
+        response_data = response.json()
+        # デバッグ用: レスポンス内容を出力
+        print(response_data)  # この行を追加
+        repos.extend(response_data)
         url = response.links.get('next', {}).get('url')
     return repos
 
