@@ -22,7 +22,15 @@ def fetch_repositories():
         repos.extend(response_data)
         url = response.links.get('next', {}).get('url')
     return repos
-
+    
+def fetch_repository_files(repo_name):
+    contents_url = f"https://api.github.com/repos/{repo_name}/contents"
+    headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
+    response = requests.get(contents_url, headers=headers)
+    if response.status_code == 200:
+        return response.json()  # ここでJSON形式で辞書を返す
+    return []
+    
 # 各リポジトリの言語データを取得
 def fetch_languages(repo):
     url = repo['languages_url']
@@ -47,18 +55,15 @@ def analyze_repository_files(repositories):
     language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
     for repo in repositories:
         repo_name = repo['name']
-        contents_url = f"https://api.github.com/repos/{repo_name}/contents"
-        headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
-        response = requests.get(contents_url, headers=headers)
-        files = response.json()
+        files = fetch_repository_files(repo_name)
         
         for file in files:
-            if file["type"] == "file":
+            if isinstance(file, dict) and file.get("type") == "file":
                 file_path = file["path"]
                 file_response = requests.get(file["download_url"])
                 if file_response.status_code == 200:
                     file_content = file_response.text
-                    language = file["language"]
+                    language = repo.get("language", "Unknown")  # 言語が不明な場合はデフォルトで "Unknown"
                     lines = file_content.splitlines()
                     step_count = len(lines)
                     
