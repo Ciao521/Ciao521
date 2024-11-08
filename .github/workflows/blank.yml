@@ -32,7 +32,7 @@ jobs:
         run: |
           LANG_USAGE=$(cat language_usage.json)
           echo -e "# Language Usage\n\n" > README.md
-          echo "${{ tojson(LANG_USAGE) }}" >> README.md
+          echo "$LANG_USAGE" >> README.md
 
       - name: Commit changes
         run: |
