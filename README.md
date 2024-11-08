@@ -10,6 +10,7 @@
 ![PHP](https://img.shields.io/badge/Language-PHP-purple)
 ![Scala](https://img.shields.io/badge/Language-Scala-red)
 ![Java](https://img.shields.io/badge/Language-Java-orange)
+
 >[!NOTE]
 > **Last updated:** 2024-11-08 18:55:30 UTC
 
