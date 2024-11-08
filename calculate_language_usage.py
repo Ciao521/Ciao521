@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+# リポジトリデータを取得
 def fetch_repositories():
     url = 'https://api.github.com/user/repos'
     headers = {
@@ -22,6 +23,7 @@ def fetch_repositories():
         url = response.links.get('next', {}).get('url')
     return repos
 
+# 各リポジトリの言語データを取得
 def fetch_languages(repo):
     url = repo['languages_url']
     headers = {
@@ -30,6 +32,7 @@ def fetch_languages(repo):
     response = requests.get(url, headers=headers)
     return response.json()
 
+# 言語使用率を計算
 def calculate_language_usage(repositories):
     language_count = defaultdict(int)
     total_bytes = 0
@@ -40,14 +43,13 @@ def calculate_language_usage(repositories):
             total_bytes += bytes_count
     return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
 
-import matplotlib.pyplot as plt
-
 # モネ風の柔らかいパステル調のカラーパレット
 monet_colors = [
     "#a8c5dd", "#f5d5b5", "#d4a5a5", "#a3c1ad", "#b2d3c2",
     "#f3e1dd", "#c4b6a4", "#e7d3c8", "#ccd4bf", "#e4d8b4"
 ]
 
+# 言語使用円環グラフを生成して保存
 def save_language_pie_chart(language_usage, filename="language_usage.png"):
     labels = []
     sizes = []
@@ -87,9 +89,7 @@ def save_language_pie_chart(language_usage, filename="language_usage.png"):
     plt.savefig(filename, format="png", bbox_inches="tight", transparent=True)
     plt.close()
 
-# この関数を呼び出すと、指定したファイル名でグラフが保存されます。
-
-
+# READMEを更新
 def save_readme(language_usage):
     # 現在の日時を取得
     update_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
@@ -105,13 +105,15 @@ def save_readme(language_usage):
         f.write("\n![Language Usage Chart](language_usage.png)\n")
 
 def main():
+    # リポジトリの言語使用率を取得・計算
     repositories = fetch_repositories()
     language_usage = calculate_language_usage(repositories)
     
+    # 言語使用率データをjsonで保存
     with open("language_usage.json", "w") as f:
         json.dump(language_usage, f)
     
-    # 言語使用率の円グラフとREADMEの保存
+    # 言語使用率の円環グラフとREADMEの保存
     save_language_pie_chart(language_usage)
     save_readme(language_usage)
 
