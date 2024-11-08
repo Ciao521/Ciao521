@@ -42,4 +42,5 @@ jobs:
           git add README.md language_usage.png
           git commit -m "Update language usage in README"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521.git
+          git pull --rebase origin main  # リモートの変更を取得して再適用
           git push origin main
