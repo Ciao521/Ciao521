@@ -101,28 +101,45 @@ def save_language_pie_chart(language_usage, filename="language_usage.png"):
     
 def analyze_repository_files(repositories):
     language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
+    headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
+    
     for repo in repositories:
         repo_name = repo['name']
-        files = fetch_repository_files(repo_name)
+        contents_url = f"https://api.github.com/repos/{repo_name}/contents"
+        print(f"Fetching files for repository: {repo_name}")
+
+        # ファイルリストを取得
+        response = requests.get(contents_url, headers=headers)
+        if response.status_code != 200:
+            print(f"Failed to fetch contents for {repo_name}: {response.status_code}")
+            continue
         
+        files = response.json()
         for file in files:
             if isinstance(file, dict) and file.get("type") == "file":
                 file_path = file["path"]
-                file_response = requests.get(file["download_url"])
-                if file_response.status_code == 200:
-                    file_content = file_response.text
-                    language = repo.get("language", "Unknown")
-                    lines = file_content.splitlines()
-                    step_count = len(lines)
-                    
-                    # 更新: ファイル数、最高ステップ数
-                    language_data[language]["file_count"] += 1
-                    language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)
+                file_download_url = file.get("download_url")
+                print(f"Analyzing file: {file_path}")
 
-                    # import文をカウント
-                    imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
-                    language_data[language]["import_counts"].update(imports)
-                    
+                # ファイル内容を取得
+                file_response = requests.get(file_download_url, headers=headers)
+                if file_response.status_code != 200:
+                    print(f"Failed to download file {file_path}: {file_response.status_code}")
+                    continue
+
+                file_content = file_response.text
+                language = repo.get("language", "Unknown")
+                lines = file_content.splitlines()
+                step_count = len(lines)
+
+                # 更新: ファイル数、最高ステップ数
+                language_data[language]["file_count"] += 1
+                language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)
+
+                # import文をカウント
+                imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
+                language_data[language]["import_counts"].update(imports)
+    
     return language_data
 
 # 言語ごとの詳細をJSONファイルに保存
