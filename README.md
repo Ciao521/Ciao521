@@ -16,7 +16,8 @@ Last updated: 2024-11-08 16:56:17 UTC
 - HTML: 0.03%
 - Dockerfile: 0.05%
 - Jsonnet: 0.0%
-
+> [!CAUTION]
+> Negative potential consequences of an action.
 ![Language Usage Chart](language_usage.png)
 
 ## Language Details (Top 3)
