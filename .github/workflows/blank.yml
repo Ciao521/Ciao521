@@ -1,0 +1,41 @@
+name: Update README with Language Usage
+
+on:
+  schedule:
+    - cron: "00***" # 毎日深夜に実行
+  workflow_dispatch: # 手動での実行も可能
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run language usage script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python calculate_language_usage.py
+
+      - name: Update README
+        run: |
+          LANG_USAGE=$(cat language_usage.json)
+          echo -e "# Language Usage\n\n" > README.md
+          echo "${{ tojson(LANG_USAGE) }}" >> README.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update language usage in README"
+          git push
