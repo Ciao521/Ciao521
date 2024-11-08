@@ -60,7 +60,7 @@ def fetch_repository_files_recursive(contents_url, headers):
 
 # 全てのファイルを解析
 def analyze_repository_files(repositories):
-    language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
+    language_data = defaultdict(lambda: {"file_count": 0, "total_steps": 0, "import_counts": Counter()})
     headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
     
     for repo in repositories:
@@ -88,9 +88,9 @@ def analyze_repository_files(repositories):
                 lines = file_content.splitlines()
                 step_count = len(lines)
 
-                # 更新: ファイル数、最高ステップ数
+                # 更新: ファイル数、ステップ数の合計
                 language_data[language]["file_count"] += 1
-                language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)
+                language_data[language]["total_steps"] += step_count  # ここで total_steps を加算
 
                 # import文をカウント
                 imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
@@ -100,9 +100,10 @@ def analyze_repository_files(repositories):
     
 # 言語使用率を「ファイル数 * ステップ数」で計算
 def calculate_language_usage(language_data):
-    total_steps_all_languages = sum(data["total_steps"] for data in language_data.values())
+    # 各言語の total_steps の合計を計算（total_steps がない場合は 0）
+    total_steps_all_languages = sum(data.get("total_steps", 0) for data in language_data.values())
     language_usage = {
-        language: round((data["total_steps"] / total_steps_all_languages) * 100, 2)
+        language: round((data.get("total_steps", 0) / total_steps_all_languages) * 100, 2)
         for language, data in language_data.items()
     }
     return language_usage
@@ -154,8 +155,8 @@ def save_readme(language_usage, language_data):
 
     with open("README.md", "w") as f:
         f.write("# Language Usage\n\n")
-        f.write(f"Last updated: {update_time}\n\n")
-        
+        f.write(f"[!NOTE]\n**Last updated:** {update_time}\n\n")
+        f.write(f"[!CAUTION]\n**language_usage = total_steps_languages:** {update_time}\n\n")
         # 言語とその割合を記載
         for language, percentage in language_usage.items():
             f.write(f"- {language}: {percentage}%\n")
