@@ -66,7 +66,8 @@ def fetch_repository_files_recursive(contents_url, headers):
             # ディレクトリの場合、再帰的にその中身を取得
             files.extend(fetch_repository_files_recursive(item["url"], headers))
     return files
-# リポジトリのファイルを解析
+
+# 全てのファイルを解析
 def analyze_repository_files(repositories):
     language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
     headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
@@ -76,13 +77,9 @@ def analyze_repository_files(repositories):
         contents_url = repo.get('contents_url', '').replace('{+path}', '')
         print(f"Fetching files for repository: {repo_name}")
 
-        # ファイルリストを取得
-        response = requests.get(contents_url, headers=headers)
-        if response.status_code != 200:
-            print(f"Failed to fetch contents for {repo_name}: {response.status_code}")
-            continue
+        # 全てのファイルを再帰的に取得
+        files = fetch_repository_files_recursive(contents_url, headers)
         
-        files = response.json()
         for file in files:
             if isinstance(file, dict) and file.get("type") == "file":
                 file_path = file["path"]
