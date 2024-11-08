@@ -3,7 +3,7 @@ Ciao👋!! Welcome to my GitHub profile! Here are some of my projects and intere
 
 ## Skills
 
-- **Languages**: JavaScript, Python, Java
+- **Languages**:  Python, Java, JavaScript
 - **Frameworks**: React, Node.js, Django
 - **Tools**: Git, Docker, VS Code
   
