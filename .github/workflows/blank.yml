@@ -39,15 +39,15 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -f language_usage.json ]; then git add language_usage.json; fi  # 存在確認後に追加
-          git add README.md language_usage.png
-          git commit -m "Update language usage in README" --allow-empty || echo "Commit executed"
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/Ciao521/Ciao521.git
           
-          # リモートの変更を取得して最新の実行結果を再適用
+          # リモートの変更を取得して最新の実行結果でリセット
           git fetch origin main
           git reset --hard origin/main
-          if [ -f language_usage.json ]; then git add language_usage.json; fi  # 再度確認
+      
+          # 再生成されたファイルを追加
+          if [ -f language_usage.json ]; then git add language_usage.json; fi
           git add README.md language_usage.png
-          git commit -m "Update language usage in README (latest result)" --allow-empty || echo "Commit executed"
-          git push origin main --force || echo "Push completed or no changes to push"
+      
+          # 変更がなくても常に新しいコミットを作成
+          git commit -m "Force update of README and image" --allow-empty
+          git push origin main --force
