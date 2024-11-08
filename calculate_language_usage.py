@@ -4,7 +4,13 @@ import json
 import os
 import re
 import matplotlib.pyplot as plt
-from datetime import datetime
+from datetime import datetime, timezone
+
+# モネ風の柔らかいパステル調のカラーパレット
+monet_colors = [
+    "#a8c5dd", "#f5d5b5", "#d4a5a5", "#a3c1ad", "#b2d3c2",
+    "#f3e1dd", "#c4b6a4", "#e7d3c8", "#ccd4bf", "#e4d8b4"
+]
 
 # リポジトリデータを取得
 def fetch_repositories():
@@ -45,19 +51,48 @@ def calculate_language_usage(repositories):
     return {language: round((bytes_count / total_bytes) * 100, 2) for language, bytes_count in language_count.items()}
 
 # リポジトリのファイルを解析
-def fetch_repository_files(repo_name):
-    contents_url = f"https://api.github.com/repos/{repo_name}/contents"
+def analyze_repository_files(repositories):
+    language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
     headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
-    response = requests.get(contents_url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    return []
     
-# モネ風の柔らかいパステル調のカラーパレット
-monet_colors = [
-    "#a8c5dd", "#f5d5b5", "#d4a5a5", "#a3c1ad", "#b2d3c2",
-    "#f3e1dd", "#c4b6a4", "#e7d3c8", "#ccd4bf", "#e4d8b4"
-]
+    for repo in repositories:
+        repo_name = repo['name']
+        contents_url = repo.get('contents_url', '').replace('{+path}', '')
+        print(f"Fetching files for repository: {repo_name}")
+
+        # ファイルリストを取得
+        response = requests.get(contents_url, headers=headers)
+        if response.status_code != 200:
+            print(f"Failed to fetch contents for {repo_name}: {response.status_code}")
+            continue
+        
+        files = response.json()
+        for file in files:
+            if isinstance(file, dict) and file.get("type") == "file":
+                file_path = file["path"]
+                file_download_url = file.get("download_url")
+                print(f"Analyzing file: {file_path}")
+
+                # ファイル内容を取得
+                file_response = requests.get(file_download_url, headers=headers)
+                if file_response.status_code != 200:
+                    print(f"Failed to download file {file_path}: {file_response.status_code}")
+                    continue
+
+                file_content = file_response.text
+                language = repo.get("language", "Unknown")
+                lines = file_content.splitlines()
+                step_count = len(lines)
+
+                # 更新: ファイル数、最高ステップ数
+                language_data[language]["file_count"] += 1
+                language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)
+
+                # import文をカウント
+                imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
+                language_data[language]["import_counts"].update(imports)
+    
+    return language_data
 
 # 言語使用円環グラフを生成して保存
 def save_language_pie_chart(language_usage, filename="language_usage.png"):
@@ -98,69 +133,11 @@ def save_language_pie_chart(language_usage, filename="language_usage.png"):
     # 画像の保存
     plt.savefig(filename, format="png", bbox_inches="tight", transparent=True)
     plt.close()
-    
-def analyze_repository_files(repositories):
-    language_data = defaultdict(lambda: {"file_count": 0, "max_steps": 0, "import_counts": Counter()})
-    headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
-    
-    for repo in repositories:
-        repo_name = repo['name']
-        contents_url = f"https://api.github.com/repos/{repo_name}/contents"
-        print(f"Fetching files for repository: {repo_name}")
-
-        # ファイルリストを取得
-        response = requests.get(contents_url, headers=headers)
-        if response.status_code != 200:
-            print(f"Failed to fetch contents for {repo_name}: {response.status_code}")
-            continue
-        
-        files = response.json()
-        for file in files:
-            if isinstance(file, dict) and file.get("type") == "file":
-                file_path = file["path"]
-                file_download_url = file.get("download_url")
-                print(f"Analyzing file: {file_path}")
-
-                # ファイル内容を取得
-                file_response = requests.get(file_download_url, headers=headers)
-                if file_response.status_code != 200:
-                    print(f"Failed to download file {file_path}: {file_response.status_code}")
-                    continue
-
-                file_content = file_response.text
-                language = repo.get("language", "Unknown")
-                lines = file_content.splitlines()
-                step_count = len(lines)
-
-                # 更新: ファイル数、最高ステップ数
-                language_data[language]["file_count"] += 1
-                language_data[language]["max_steps"] = max(language_data[language]["max_steps"], step_count)
-
-                # import文をカウント
-                imports = re.findall(r'^\s*(import\s+\w+|from\s+\w+\s+import)', file_content, re.MULTILINE)
-                language_data[language]["import_counts"].update(imports)
-    
-    return language_data
-
-# 言語ごとの詳細をJSONファイルに保存
-def save_language_details(language_data, filename="language_details.json"):
-    # Counterをリストに変換してJSONに保存可能な形式に
-    formatted_data = {
-        language: {
-            "file_count": data["file_count"],
-            "max_steps": data["max_steps"],
-            "top_imports": data["import_counts"].most_common(5)
-        }
-        for language, data in language_data.items()
-    }
-
-    with open(filename, "w") as f:
-        json.dump(formatted_data, f, indent=4)
 
 # READMEを更新
 def save_readme(language_usage):
     # 現在の日時を取得
-    update_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
+    update_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
 
     with open("README.md", "w") as f:
         f.write("# Language Usage\n\n")
