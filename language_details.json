@@ -51,6 +51,32 @@
             ]
         ]
     },
+    "Jupyter Notebook": {
+        "file_count": 137,
+        "max_steps": 514055,
+        "top_imports": [
+            [
+                "import time",
+                2
+            ],
+            [
+                "import torch",
+                2
+            ],
+            [
+                "import requests",
+                1
+            ],
+            [
+                "from bs4 import",
+                1
+            ],
+            [
+                "import json",
+                1
+            ]
+        ]
+    },
     "JavaScript": {
         "file_count": 15,
         "max_steps": 30039,
@@ -80,11 +106,6 @@
     "null": {
         "file_count": 11,
         "max_steps": 58646,
-        "top_imports": []
-    },
-    "Jupyter Notebook": {
-        "file_count": 1,
-        "max_steps": 2250,
         "top_imports": []
     }
 }
